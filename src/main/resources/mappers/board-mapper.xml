@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Image">
+    <insert id="insertImage" parameterType="image">
+        INSERT INTO image (userid, title, description, filename, imagePath)
+        VALUES (#{userid}, #{title}, #{description}, #{filename}, #{imagePath})
+    </insert>
+
+    <update id="updateImage" parameterType="image">
+        UPDATE image
+        SET title = #{title},
+        description = #{description},
+        filename = #{filename},
+        imagePath = #{imagePath}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteImage" parameterType="int">
+        DELETE FROM image WHERE id = #{id}
+    </delete>
+
+    <select id="getImage" parameterType="int" resultType="image">
+        SELECT * FROM image WHERE id = #{id}
+    </select>
+
+    <select id="getImageCnt" resultType="int">
+        SELECT COUNT(*) FROM image
+    </select>
+
+    <select id="getImageList" resultType="image">
+        SELECT * FROM image ORDER BY id DESC
+    </select>
+
+    <update id="incrementViewCount" parameterType="int">
+        UPDATE image SET views = views + 1 WHERE id = #{id}
+    </update>
+
+    <select id="getPostById" resultType="image">
+        SELECT * FROM image WHERE id = #{id}
+    </select>
+
+    <update id="incrementLikes" parameterType="int">
+        UPDATE image
+        SET likes = likes + 1
+        WHERE id = #{id}
+    </update>
+
+    <select id="getFilenameById" parameterType="int" resultType="string">
+        SELECT filename
+        FROM image
+        WHERE id = #{id}
+    </select>
+
+    <sql id="searchCondition">
+        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+        OR description LIKE CONCAT('%', #{keyword}, '%')
+    </sql>
+
+    <select id="searchImages" parameterType="string" resultType="image">
+        SELECT * FROM image
+        <include refid="searchCondition"/>
+    </select>
+
+    <select id="getSearchResultCount" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM image
+        <include refid="searchCondition"/>
+    </select>
+
+</mapper>
